@@ -1,0 +1,151 @@
+{
+  "pageTitle": "用户管理",
+  "toolButton": true,
+  "headerToolbar": [
+    {
+      "type": "primary",
+      "icon": "user",
+      "clickFunction": "createUser",
+      "text": "新建用户"
+    },
+    {
+      "type": "success",
+      "icon": "refresh",
+      "clickFunction": "refreshTable",
+      "text": "刷新"
+    }
+  ],
+  "pageableConfig": {
+    "pageNumKey": "pageNum",
+    "pageSizeKey": "pageSize",
+    "totalKey": "total"
+  },
+  "columns": [
+    {
+      "type": "selection",
+      "fixed": "left",
+      "width": 80
+    },
+    {
+      "type": "index",
+      "label": "序号",
+      "width": 80
+    },
+    {
+      "type": "expand",
+      "label": "Expand",
+      "width": 100
+    },
+    {
+      "prop": "username",
+      "label": "用户姓名",
+      "search": {
+        "el": "input"
+      }
+    },
+    {
+      "prop": "gender",
+      "label": "性别",
+      "enum": [
+        {
+          "genderLabel": "男",
+          "genderValue": 1
+        },
+        {
+          "genderLabel": "女",
+          "genderValue": 2
+        }
+      ],
+      "search": {
+        "el": "select",
+        "props": {
+          "filterable": true
+        }
+      },
+      "fieldNames": {
+        "label": "genderLabel",
+        "value": "genderValue"
+      }
+    },
+    {
+      "prop": "age",
+      "label": "年龄",
+      "search": {
+        "el": "input"
+      }
+    },
+    {
+      "prop": "idCard",
+      "label": "身份证号",
+      "search": {
+        "el": "input"
+      }
+    },
+    {
+      "prop": "email",
+      "label": "邮箱"
+    },
+    {
+      "prop": "address",
+      "label": "居住地址"
+    },
+    {
+      "prop": "status",
+      "label": "用户状态",
+      "enum": [
+        {
+          "userLabel": "启用",
+          "userStatus": 1
+        },
+        {
+          "userLabel": "禁用",
+          "userStatus": 0
+        }
+      ],
+      "search": {
+        "el": "select",
+        "props": {
+          "filterable": true
+        }
+      },
+      "fieldNames": {
+        "label": "userLabel",
+        "value": "userStatus"
+      }
+    },
+    {
+      "prop": "createTime",
+      "label": "创建时间",
+      "width": 180,
+      "search": {
+        "el": "date-picker",
+        "span": 2,
+        "props": {
+          "type": "datetimerange",
+          "valueFormat": "YYYY-MM-DD HH:mm:ss"
+        },
+        "defaultValue": [
+          "2022-11-12 11:35:00",
+          "2022-12-12 11:35:00"
+        ]
+      }
+    },
+    {
+      "prop": "operation",
+      "label": "操作",
+      "fixed": "right",
+      "width": 330,
+      "buttons": [
+        {
+          "type": "delete",
+          "icon": "delete",
+          "clickFunction": "deleteUser",
+          "text": "删除"
+        }
+      ]
+    }
+  ],
+  "types": "types.ts",
+  "deleteApi": "deleteUser",
+  "apiFile": "api.ts"
+}

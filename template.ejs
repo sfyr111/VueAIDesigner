@@ -1,0 +1,95 @@
+<template>
+    <div class="table-box">
+        <ProTable
+                ref="proTable"
+                title="<%= pageTitle %>"
+                :columns="columns"
+                :requestApi="getTableList"
+                :initParam="initParam"
+                :toolButton="<%= toolButton %>"
+                :dataCallback="dataCallback"
+                :pageableConfig="pageableConfig"
+                :formatRequestParams="formatRequestParams">
+
+            <% if (headerToolbar) { -%>
+                <!-- 表格 header 操作按钮 -->
+                <template #tableHeader="scope">
+                    <% headerToolbar.forEach(({ type, icon, clickFunction, text }) => { -%>
+                        <el-button type="<%= type %>" :icon="<%= icon %>" @click="<%= clickFunction %>">
+                            <%= text %>
+                        </el-button>
+                    <% }) -%>
+                </template>
+            <% } -%>
+
+            <% columns.forEach(column => { -%>
+                <% if (column.type === 'expand') { -%>
+                    <!-- 对应 columns 中 type: "expand" 的内容 -->
+                    <template #expand="scope">
+                        {{ scope.row }}
+                    </template>
+                <% } -%>
+
+                <% if (column.prop === 'operation') { -%>
+                    <!-- 对应 columns 中 prop: "operation" 的表格操作 -->
+                    <template #<%= column.prop %>="scope">
+                        <% column.buttons.forEach(({ type, icon, clickFunction, text }) => { -%>
+                            <el-button type="<%= type %>" link :icon="<%= icon %>" @click="<%= clickFunction %>('<%= text %>', scope.row)">
+                                <%= text %>
+                            </el-button>
+                        <% }) -%>
+                    </template>
+                <% } -%>
+            <% }); -%>
+        </ProTable>
+    </div>
+</template>
+
+<script setup lang="tsx" name="crud">
+  import { ref, reactive } from "vue";
+  import { useRouter } from "vue-router";
+  import { ColumnProps } from "@fe-components/pro-table/dist/interface";
+  import { useHandleData } from "@/hooks/useHandleData";
+
+  <% headerToolbar.forEach(({ icon }) => { %>
+    import { <%= icon %> } from "@element-plus/icons-vue";
+  <% }) %>
+
+  import { Res } from "<%= types %>";
+  import { <%= deleteApi %> } from "<%= apiFile %>";
+
+  const pageableConfig = {
+    pageNumKey: '<%= pageableConfig.pageNumKey %>',
+    pageSizeKey: '<%= pageableConfig.pageSizeKey %>',
+    totalKey: '<%= pageableConfig.totalKey %>',
+  }
+
+  const router = useRouter();
+  const proTable = ref();
+  const initParam = reactive({});
+
+  const dataCallback = (data: any) => {
+    return {
+      list: data.list,
+      total: data.total,
+      pageNum: data[pageableConfig.pageNumKey],
+      pageSize: data[pageableConfig.pageSizeKey],
+    };
+  }
+
+  const columns: ColumnProps<Res>[] = <%- JSON.stringify(columns, null, 2) %>;
+
+  <% columns.forEach(column => { %>
+     <% if (column.prop === 'operation') { %>
+        <% column.buttons.forEach(({ clickFunction, type }) => { %>
+            <% if (type === 'delete') { %>
+                async function <%= clickFunction %> (params: Res) {
+                    await useHandleData(<%= deleteApi %>, { id: params.id }, '提示文案');
+                    proTable.value.getTableList();
+                };
+            <% } %>
+            <% /* 其他类型的操作函数 */ %>
+        <% }) %>
+    <% } %>
+  <% }); %>
+</script>
